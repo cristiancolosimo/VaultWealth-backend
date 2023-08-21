@@ -9,7 +9,7 @@ edition = "2021"
 argon2 = "0.5.1"
 axum = "0.6.20"
 chrono = "0.4.26"
-dotenv = "0.15.0"
+dotenvy = "0.15.7"
 jsonwebtoken = "8.3.0"
 nanoid = "0.4.0"
 serde = { version = "1.0.185", features = ["derive"] }
