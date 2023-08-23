@@ -28,9 +28,10 @@ pub fn generate_access_token(user_id: String)-> String{
     let time_now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap();
-    let scadenza = std::time::Duration::new(60 * 60, 0);
+    //The session will expire after 1 hour
+    let expire_duration = std::time::Duration::new(60 * 60, 0);
 
-    let exp = time_now + scadenza;
+    let exp = time_now + expire_duration;
     let exp = exp.as_secs();
     let time_now = time_now.as_secs();
 
@@ -67,6 +68,4 @@ pub fn verify_access_token(token:String)->Option<String>{
             return None;
         }
     };
-    
-    
 }

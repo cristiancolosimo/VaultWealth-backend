@@ -6,7 +6,7 @@ use axum::{
 };
 use sqlx::mysql::MySqlPool;
 
-use crate::models::user::{User, UserRegistrationLogin};
+use crate::{models::{user::{User, UserRegistrationLogin}, response::GenericResponse}, utils::jwt::generate_access_token};
 
 
 
@@ -18,11 +18,16 @@ pub async fn registration(State(pool): State<MySqlPool>,Json(payload): Json<User
     (StatusCode::CREATED, Json(payload))
 }
 
-pub async fn login(State(pool): State<MySqlPool>,Json(payload): Json<UserRegistrationLogin>)-> (StatusCode, Json<UserRegistrationLogin>) {
+
+pub async fn login(State(pool): State<MySqlPool>,Json(payload): Json<UserRegistrationLogin>)-> (StatusCode, Json<GenericResponse<String>>) {
     let user = User::login_db(pool,payload.email.clone(),payload.password.clone()).await;
     if user.is_none() {
-        return (StatusCode::UNAUTHORIZED, Json(payload));
+        return (StatusCode::UNAUTHORIZED, Json(GenericResponse { message: String::from("ERROR"), data: None }));
     }
-    
-    (StatusCode::ACCEPTED, Json(payload))
+    let token = generate_access_token(user.unwrap().id.clone());
+    let response = GenericResponse{
+        message: String::from("OK"),
+        data: Some(token),
+    };
+    (StatusCode::ACCEPTED, Json(response))
 }

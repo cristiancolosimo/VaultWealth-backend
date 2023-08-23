@@ -8,9 +8,12 @@ use crate::utils::password::verify_password;
 pub struct User {
     pub id: String,
     pub email: String,
+    #[serde(skip_serializing)]
     pub password: String,
     pub created_at: DateTime<Utc>,
+    #[serde(skip_serializing)]
     pub updated_at: DateTime<Utc>,
+    #[serde(skip_serializing)]
     pub deleted_at: Option<DateTime<Utc>>,
 }
 

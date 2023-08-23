@@ -1,4 +1,6 @@
 -- Add up migration script here
+
+--The foreign keys are disabled for support planetscale mysql istance
 CREATE TABLE PREFIX_User (
     id VARCHAR(25) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -66,8 +68,7 @@ CREATE TABLE PREFIX_BankAccountEntryTag (
     tag_id VARCHAR(25) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
-    PRIMARY KEY (bank_account_entry_id, tag_id),
-    deleted_at TIMESTAMP DEFAULT NULL/*,
+    PRIMARY KEY (bank_account_entry_id, tag_id)/*,
     FOREIGN KEY (bank_account_entry_id) REFERENCES PREFIX_BankAccountEntry(id),
     FOREIGN KEY (tag_id) REFERENCES PREFIX_Tag(id)*/
 );
