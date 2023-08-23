@@ -14,6 +14,7 @@ use sqlx::mysql::MySqlPoolOptions;
 
 pub mod models;
 pub mod utils;
+pub mod middlewares;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>>{
     // initialize tracing
@@ -31,9 +32,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
 
         .with_state(pool);
 
-
+    let port = env::var("PORT").unwrap_or("3000".to_string());
+    let port = port.parse::<u16>().unwrap();
     // run our app with hyper, listening globally on port 3000
-    let addr = SocketAddr::from(([0, 0, 0, 0], 3000));
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     axum::Server::bind(&addr)
     .serve(app.into_make_service())
     .await
