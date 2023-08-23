@@ -9,11 +9,11 @@ pub struct BankAccount {
     id: String,
     #[serde(skip_serializing)]
     user_id: String,
-    name: String,
-    description: Option<String>,
-    iban: Option<String>,
-    bic: Option<String>,
-    include_in_total: bool,
+    pub name: String,
+    pub description: Option<String>,
+    pub iban: Option<String>,
+    pub bic: Option<String>,
+    pub include_in_total: bool,
     #[serde(skip_serializing)]
     created_at: DateTime<Utc>,
     #[serde(skip_serializing)]
@@ -24,6 +24,7 @@ pub struct BankAccount {
 
 impl BankAccount{
 
+    
 
     pub fn create(user_id: String, name:String, description: Option<String>, iban: Option<String>, bic: Option<String>, include_in_total: bool)-> BankAccount{
         let bank_account_created = BankAccount{
@@ -76,8 +77,8 @@ impl BankAccount{
         Some(result.unwrap())
     }
     
-    pub async fn update_db(self, pool:MySqlPool, user_id: String){
-        let result = sqlx::query!(
+    pub async fn update_db(&self, pool:MySqlPool, user_id: String){
+        let result: sqlx::mysql::MySqlQueryResult = sqlx::query!(
             "UPDATE PREFIX_BankAccount SET name = ?, description = ?, iban = ?, bic = ?, include_in_total = ?, updated_at = ? WHERE id = ? AND user_id = ?; ",
             self.name,
             self.description,

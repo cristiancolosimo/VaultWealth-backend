@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::{get, post, delete},
     http::StatusCode,
     Json, Router,
 };
@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
 mod controllers;
-use controllers::{user::{registration, login}, bank::{create_bank, list_all_banks}};
+use controllers::{user::{registration, login}, bank::{create_bank, list_all_banks,get_bank,update_bank,delete_bank}};
 use std::env;
 use sqlx::mysql::MySqlPoolOptions;
 
@@ -31,6 +31,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
         .route("/users/login", post(login))
         
         .route("/bank/create", post(create_bank))
+        .route("/bank/:id", post(update_bank))
+        .route("/bank/:id", get(get_bank))
+        .route("/bank/:id", delete(delete_bank))
+
         .route("/bank", get(list_all_banks))
 
 
