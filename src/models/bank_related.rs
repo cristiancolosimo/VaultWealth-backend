@@ -1,4 +1,4 @@
-use chrono::{NaiveDateTime, NaiveDate};
+use chrono::{NaiveDateTime, NaiveDate, Utc, Date, DateTime};
 use serde::{Serialize, Deserialize};
 
 
@@ -14,7 +14,6 @@ struct BankAccount {
     created_at: NaiveDateTime,
     updated_at: NaiveDateTime,
     deleted_at: Option<NaiveDateTime>,
-
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -25,16 +24,16 @@ struct BankAccountEntry {
     name: String,
     description: Option<String>,
     amount: f64,
-    transaction_date: NaiveDate,
-    created_at: NaiveDateTime,
-    updated_at: NaiveDateTime,
-    deleted_at: Option<NaiveDateTime>,
+    transaction_date: DateTime<Utc>,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    deleted_at: Option<DateTime<Utc>>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 struct BankAccountEntryTag {
     bank_account_entry_id: String,
     tag_id: String,
-    created_at: NaiveDateTime,
-    updated_at: NaiveDateTime,
-    deleted_at: Option<NaiveDateTime>,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    deleted_at: Option<DateTime<Utc>>,
 }

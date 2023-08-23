@@ -1,8 +1,8 @@
 -- Add up migration script here
 CREATE TABLE PREFIX_User (
     id VARCHAR(25) PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    password VARCHAR(64) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     deleted_at TIMESTAMP DEFAULT NULL
@@ -43,6 +43,7 @@ CREATE TABLE PREFIX_BankAccountEntry (
 
 CREATE TABLE PREFIX_Category (
     id VARCHAR(25) PRIMARY KEY,
+    user_id VARCHAR(25) NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP NOT NULL,
@@ -52,6 +53,7 @@ CREATE TABLE PREFIX_Category (
 
 CREATE TABLE PREFIX_Tag (
     id VARCHAR(25) PRIMARY KEY,
+    user_id VARCHAR(25) NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
     created_at TIMESTAMP NOT NULL,
