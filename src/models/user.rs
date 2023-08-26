@@ -10,11 +10,11 @@ pub struct User {
     pub email: String,
     #[serde(skip_serializing)]
     pub password: String,
-    pub created_at: DateTime<Utc>,
+    pub created_at: NaiveDateTime,
     #[serde(skip_serializing)]
-    pub updated_at: DateTime<Utc>,
+    pub updated_at: NaiveDateTime,
     #[serde(skip_serializing)]
-    pub deleted_at: Option<DateTime<Utc>>,
+    pub deleted_at: Option<NaiveDateTime>,
 }
 
 impl User {
@@ -42,8 +42,8 @@ impl User {
             id: nanoid!(),
             email: email,
             password: password_hashed,
-            created_at: Utc::now(),
-            updated_at: Utc::now(),
+            created_at: Utc::now().naive_local(),
+            updated_at: Utc::now().naive_local(),
             deleted_at: None,
         };
         user_created      

@@ -9,10 +9,10 @@ struct Tag {
     name: String,
     description: Option<String>,
     #[serde(skip_serializing)]
-    created_at: DateTime<Utc>,
+    created_at: NaiveDateTime,
     #[serde(skip_serializing)]
-    updated_at: DateTime<Utc>,
+    updated_at: NaiveDateTime,
     #[serde(skip_serializing)]
-    deleted_at: Option<DateTime<Utc>>,
+    deleted_at: Option<NaiveDateTime>,
 }
 
