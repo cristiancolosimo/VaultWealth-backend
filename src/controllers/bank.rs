@@ -1,3 +1,4 @@
+use chrono::{Utc, DateTime, NaiveDate, NaiveDateTime};
 use serde::{Deserialize, Serialize};
 use axum::{
     routing::{get, post},
@@ -6,8 +7,9 @@ use axum::{
     extract::{Extension,FromRequest,Path}, body::Body
 };
 use sqlx::mysql::MySqlPool;
+use rust_decimal::prelude::*;
 
-use crate::{utils::jwt::verify_access_token, models::response::GenericResponse};
+use crate::{utils::jwt::verify_access_token, models::{response::GenericResponse, bank_related::BankAccountEntry}};
 
 use crate::models::bank_related::BankAccount;
 
@@ -100,5 +102,39 @@ pub async fn delete_bank(State(pool): State<MySqlPool>,Path(bank_id): Path<Strin
     bank.delete_db(pool,user_id).await;
     return (StatusCode::OK, Json(GenericResponse { message: String::from("OK"), data: Some(String::from("DELETED")) }));
 
+}
+
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct RequestCreateUpdateBankEntryPayload{
+    category_id: Option<String>,
+    name: String,
+    description: Option<String>,
+    amount: Decimal,
+    transaction_date: NaiveDate
+}
+
+
+pub async fn create_bank_entry(State(pool): State<MySqlPool>, Path(bank_account_id): Path<String>, headers:HeaderMap,Json(create_bank_req): Json<RequestCreateUpdateBankEntryPayload>)-> (StatusCode, Json<GenericResponse<BankAccountEntry>>){
+    let is_verified = is_verified_fake_middleware(headers);
+    if is_verified.is_none(){
+        return (StatusCode::UNAUTHORIZED, Json(GenericResponse { message: String::from("ERROR NOT AUTORIZED"), data: None }));
+    }
+    let user_id = is_verified.unwrap();
+    let bank_entry = BankAccountEntry::create(bank_account_id,user_id,create_bank_req.category_id,create_bank_req.name,create_bank_req.description,create_bank_req.amount,create_bank_req.transaction_date);
+    bank_entry.create_db(pool).await;
+    return (StatusCode::OK, Json(GenericResponse { message: String::from("OK"), data: Some(bank_entry) }));
+}
+
+pub async fn list_bank_entry(State(pool): State<MySqlPool>, Path(bank_account_id): Path<String>, headers:HeaderMap)-> (StatusCode, Json<GenericResponse<Vec<BankAccountEntry>>>){
+    let is_verified: Option<String> = is_verified_fake_middleware(headers);
+    if is_verified.is_none(){
+        return (StatusCode::UNAUTHORIZED, Json(GenericResponse { message: String::from("ERROR NOT AUTORIZED"), data: None }));
+    }
+    let user_id = is_verified.unwrap();
+    let bank_entries = BankAccountEntry::list_all_by_user_id_and_bank_id(user_id,bank_account_id,pool).await;
+    println!("{:?}",bank_entries);
+    return (StatusCode::OK, Json(GenericResponse { message: String::from("OK"), data: Some(bank_entries) }));    
 }
 

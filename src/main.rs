@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 
 mod controllers;
-use controllers::{user::{registration, login}, bank::{create_bank, list_all_banks,get_bank,update_bank,delete_bank}};
+use controllers::{user::{registration, login}, bank::{create_bank, list_all_banks,get_bank,update_bank,delete_bank,create_bank_entry, list_bank_entry}};
 use std::env;
 use sqlx::mysql::MySqlPoolOptions;
 
@@ -34,8 +34,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
         .route("/bank/:id", post(update_bank))
         .route("/bank/:id", get(get_bank))
         .route("/bank/:id", delete(delete_bank))
-
         .route("/bank", get(list_all_banks))
+
+        .route("/bank-entry/:bank_id/create", post(create_bank_entry))
+        .route("/bank-entry/:bank_id/:id", post(update_bank))
+        //.route("/bank-entry/:bank_id/:id", get(get_bank))
+        //.route("/bank-entry/:bank_id/:id", delete(delete_bank))
+        .route("/bank-entry/:bank_id", get(list_bank_entry))
+
+
 
 
         .with_state(pool);
