@@ -5,6 +5,7 @@ use axum::{
 };
 use dotenvy::dotenv;
 use serde::{Deserialize, Serialize};
+use tower_http::cors::CorsLayer;
 use std::net::SocketAddr;
 
 mod controllers;
@@ -30,21 +31,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>>{
         .route("/users/registration", post(registration))
         .route("/users/login", post(login))
         
-        .route("/bank/create", post(create_bank))
-        .route("/bank/:id", post(update_bank))
-        .route("/bank/:id", get(get_bank))
-        .route("/bank/:id", delete(delete_bank))
-        .route("/bank", get(list_all_banks))
+        .route("/banks/create", post(create_bank))
+        .route("/banks/:id", post(update_bank))
+        .route("/banks/:id", get(get_bank))
+        .route("/banks/:id", delete(delete_bank))
+        .route("/banks", get(list_all_banks))
 
-        .route("/bank-entry/:bank_id/create", post(create_bank_entry))
-        .route("/bank-entry/:bank_id/:id", post(update_bank))
+        .route("/bank-entrys/:bank_id/create", post(create_bank_entry))
+        .route("/bank-entrys/:bank_id/:id", post(update_bank))
         //.route("/bank-entry/:bank_id/:id", get(get_bank))
         //.route("/bank-entry/:bank_id/:id", delete(delete_bank))
-        .route("/bank-entry/:bank_id", get(list_bank_entry))
+        .route("/bank-entrys/:bank_id", get(list_bank_entry))
 
 
-
-
+        .layer(CorsLayer::permissive())
         .with_state(pool);
 
     let port = env::var("PORT").unwrap_or("3000".to_string());
